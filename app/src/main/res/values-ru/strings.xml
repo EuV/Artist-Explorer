@@ -2,4 +2,18 @@
     <string name="app_name">Исполнители</string>
 
     <string name="label_artists">Исполнители</string>
+
+    <string name="format_albums_zero">%d альбомов</string>
+    <string name="format_albums_one">%d альбом</string>
+    <string name="format_albums_ten_twenty">@string/format_albums_zero</string>
+    <string name="format_albums_X1">@string/format_albums_one</string>
+    <string name="format_albums_X2_4">%d альбома</string>
+    <string name="format_albums_X5_0">@string/format_albums_zero</string>
+
+    <string name="format_tracks_zero">%d песен</string>
+    <string name="format_tracks_one">%d песня</string>
+    <string name="format_tracks_ten_twenty">@string/format_tracks_zero</string>
+    <string name="format_tracks_X1">@string/format_tracks_one</string>
+    <string name="format_tracks_X2_4">%d песни</string>
+    <string name="format_tracks_X5_0">@string/format_tracks_zero</string>
 </resources>

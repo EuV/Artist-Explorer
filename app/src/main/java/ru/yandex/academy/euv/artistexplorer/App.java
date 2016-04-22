@@ -1,6 +1,7 @@
 package ru.yandex.academy.euv.artistexplorer;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Handler;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -10,6 +11,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 public class App extends Application {
     private static Thread uiThread;
+    private static Context context;
     private static Handler handler;
 
     @Override
@@ -17,12 +19,22 @@ public class App extends Application {
         super.onCreate();
 
         uiThread = Thread.currentThread();
-        handler = new Handler(getApplicationContext().getMainLooper());
+        context = getApplicationContext();
+        handler = new Handler(context.getMainLooper());
 
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
                 .newBuilder(this, new OkHttpClient())
                 .build();
         Fresco.initialize(this, config);
+    }
+
+
+    /**
+     * Convenient method to get the application context at any place in the app.
+     * Use with caution.
+     */
+    public static Context getContext() {
+        return context;
     }
 
 

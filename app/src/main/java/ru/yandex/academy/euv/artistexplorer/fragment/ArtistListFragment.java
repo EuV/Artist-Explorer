@@ -24,6 +24,7 @@ import ru.yandex.academy.euv.artistexplorer.Artist;
 import ru.yandex.academy.euv.artistexplorer.JsonLoader;
 import ru.yandex.academy.euv.artistexplorer.JsonLoader.LoaderCallback;
 import ru.yandex.academy.euv.artistexplorer.R;
+import ru.yandex.academy.euv.artistexplorer.util.I18n;
 
 public class ArtistListFragment extends Fragment implements LoaderCallback {
     private static final String KEY_ARTIST_LIST = "key_artist_list";
@@ -130,10 +131,14 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
         @Override
         public void onBindViewHolder(ArtistViewHolder holder, int position) {
             Artist artist = artistList.get(position);
+
             holder.cover.setImageURI(Uri.parse(artist.getCover().getSmall()));
             holder.name.setText(artist.getName());
             holder.genres.setText(TextUtils.join(", ", artist.getGenres()));
-            holder.albumsAndTracks.setText(artist.getAlbums() + " + " + artist.getTracks());
+
+            String albums = I18n.albums(artist.getAlbums());
+            String tracks = I18n.tracks(artist.getTracks());
+            holder.albumsAndTracks.setText(getString(R.string.sep_by_comma, albums, tracks));
         }
 
 

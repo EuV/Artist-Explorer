@@ -2,4 +2,21 @@
     <string name="app_name">Artist Explorer</string>
 
     <string name="label_artists">Artists</string>
+
+    <string name="format_albums_zero">%d albums</string>
+    <string name="format_albums_one">%d album</string>
+    <string name="format_albums_ten_twenty">@string/format_albums_zero</string>
+    <string name="format_albums_X1">@string/format_albums_zero</string>
+    <string name="format_albums_X2_4">@string/format_albums_zero</string>
+    <string name="format_albums_X5_0">@string/format_albums_zero</string>
+
+    <string name="format_tracks_zero">%d tracks</string>
+    <string name="format_tracks_one">%d track</string>
+    <string name="format_tracks_ten_twenty">@string/format_tracks_zero</string>
+    <string name="format_tracks_X1">@string/format_tracks_zero</string>
+    <string name="format_tracks_X2_4">@string/format_tracks_zero</string>
+    <string name="format_tracks_X5_0">@string/format_tracks_zero</string>
+
+    <string name="sep_by_comma" translatable="false">%1$s, %2$s</string>
+    <string name="sep_by_middot" translatable="false">%1$s · %2$s</string>
 </resources>
