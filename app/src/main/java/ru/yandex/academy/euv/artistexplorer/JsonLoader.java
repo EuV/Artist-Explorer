@@ -2,6 +2,8 @@ package ru.yandex.academy.euv.artistexplorer;
 
 import android.support.annotation.NonNull;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -26,7 +28,7 @@ public final class JSONLoader {
      * All types of errors are split into two groups for simplicity.
      */
     public interface LoaderCallback {
-        void onArtistListLoaded(@NonNull ArrayList<String> artistList);
+        void onArtistListLoaded(@NonNull ArrayList<Artist> artistList);
         void failedToDownloadData();
         void failedToParseData();
     }
@@ -34,6 +36,12 @@ public final class JSONLoader {
     private JSONLoader() { /* */ }
 
 
+    /**
+     * TODO
+     * May return data almost immediate (e.g. from cache), so must be called
+     * when a target view has been prepared (i.e. in current implementation
+     * should be invoked after onCreateView() returns the root view).
+     */
     public static void loadArtistList(final LoaderCallback callback) {
         Request request = new Request.Builder().url(ARTISTS_JSON_URL).build();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -47,10 +55,13 @@ public final class JSONLoader {
             public void onResponse(Response response) {
                 if (response.isSuccessful()) {
                     try {
-                        ArrayList<String> artistList = new ArrayList<>();
-                        artistList.add(response.body().string());
+                        String rawData = response.body().string();
+                        ArrayList<Artist> artistList = (ArrayList<Artist>) JSON.parseArray(rawData, Artist.class);
+                        if (artistList == null) {
+                            artistList = new ArrayList<>();
+                        }
                         callback.onArtistListLoaded(artistList);
-                    } catch (IOException e) {
+                    } catch (JSONException | IOException e) {
                         callback.failedToParseData();
                     }
                 } else {

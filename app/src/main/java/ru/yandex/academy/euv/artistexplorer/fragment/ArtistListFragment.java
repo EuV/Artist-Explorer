@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ru.yandex.academy.euv.artistexplorer.App;
+import ru.yandex.academy.euv.artistexplorer.Artist;
 import ru.yandex.academy.euv.artistexplorer.JSONLoader;
 import ru.yandex.academy.euv.artistexplorer.R;
 
@@ -21,7 +22,7 @@ public class ArtistListFragment extends Fragment implements JSONLoader.LoaderCal
     private static final String KEY_ARTIST_LIST = "key_artist_list";
 
     private OnArtistSelectedListener host;
-    private ArrayList<String> artistList;
+    private ArrayList<Artist> artistList;
 
     public interface OnArtistSelectedListener {
         void onArtistSelected(@NonNull String artistName);
@@ -43,17 +44,7 @@ public class ArtistListFragment extends Fragment implements JSONLoader.LoaderCal
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            artistList = savedInstanceState.getStringArrayList(KEY_ARTIST_LIST);
-        }
-
         View rootView = inflater.inflate(R.layout.fragment_artist_list, container, false);
-
-        if (artistList == null) {
-            JSONLoader.loadArtistList(this);
-        } else {
-            ((TextView) rootView.findViewById(R.id.text_tmp)).setText(artistList.get(0));
-        }
 
         rootView.findViewById(R.id.button_select_artist).setOnClickListener(new OnClickListener() {
             @Override
@@ -67,18 +58,34 @@ public class ArtistListFragment extends Fragment implements JSONLoader.LoaderCal
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putStringArrayList(KEY_ARTIST_LIST, artistList);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            artistList = savedInstanceState.getParcelableArrayList(KEY_ARTIST_LIST);
+        }
+
+        if (artistList == null) {
+            JSONLoader.loadArtistList(this);
+        } else {
+            ((TextView) getView().findViewById(R.id.text_tmp)).setText(artistList.get(0).getName());
+        }
     }
 
 
     @Override
-    public void onArtistListLoaded(@NonNull final ArrayList<String> artistList) {
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(KEY_ARTIST_LIST, artistList);
+    }
+
+
+    @Override
+    public void onArtistListLoaded(@NonNull final ArrayList<Artist> artistList) {
         App.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 ArtistListFragment.this.artistList = artistList;
-                ((TextView) getView().findViewById(R.id.text_tmp)).setText(artistList.get(0));
+                ((TextView) getView().findViewById(R.id.text_tmp)).setText(artistList.get(0).getName());
             }
         });
     }
