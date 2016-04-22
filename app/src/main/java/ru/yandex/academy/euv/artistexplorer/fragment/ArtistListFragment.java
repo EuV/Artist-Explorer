@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -127,6 +128,8 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
         public void onBindViewHolder(ArtistViewHolder holder, int position) {
             Artist artist = artistList.get(position);
             holder.name.setText(artist.getName());
+            holder.genres.setText(TextUtils.join(", ", artist.getGenres()));
+            holder.albumsAndTracks.setText(artist.getAlbums() + " + " + artist.getTracks());
         }
 
 
@@ -146,10 +149,14 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
     private class ArtistViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
+        final TextView genres;
+        final TextView albumsAndTracks;
 
         public ArtistViewHolder(View artistView) {
             super(artistView);
             name = (TextView) artistView.findViewById(R.id.text_artist_name);
+            genres = (TextView) artistView.findViewById(R.id.text_artist_genres);
+            albumsAndTracks = (TextView) artistView.findViewById(R.id.text_artist_albums_and_tracks);
         }
     }
 }

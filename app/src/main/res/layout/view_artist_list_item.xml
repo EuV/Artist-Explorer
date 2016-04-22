@@ -1,13 +1,48 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/img_artist_cover"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/text_default_padding"
+        android:contentDescription="@null"
+        android:src="@android:drawable/sym_def_app_icon"/>
 
     <TextView
         android:id="@+id/text_artist_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"/>
+        style="@style/PrimaryText"
+        android:layout_alignTop="@id/img_artist_cover"
+        android:layout_marginEnd="@dimen/text_default_padding"
+        android:layout_marginRight="@dimen/text_default_padding"
+        android:layout_marginTop="@dimen/text_vertical_padding"
+        android:layout_toEndOf="@id/img_artist_cover"
+        android:layout_toRightOf="@id/img_artist_cover"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/text_artist_genres"
+        style="@style/SecondaryText"
+        android:layout_below="@id/text_artist_name"
+        android:layout_toEndOf="@id/img_artist_cover"
+        android:layout_toRightOf="@id/img_artist_cover"/>
+
+    <TextView
+        android:id="@+id/text_artist_albums_and_tracks"
+        style="@style/SecondaryText"
+        android:layout_alignBottom="@id/img_artist_cover"
+        android:layout_marginBottom="@dimen/text_vertical_padding"
+        android:layout_toEndOf="@id/img_artist_cover"
+        android:layout_toRightOf="@id/img_artist_cover"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black_12"/>
+
+</RelativeLayout>
