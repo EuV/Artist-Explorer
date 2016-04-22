@@ -1,5 +1,36 @@
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="primary_50">#ffebee</color>
+    <color name="primary_100">#ffcdd2</color>
+    <color name="primary_200">#ef9a9a</color>
+    <color name="primary_300">#e57373</color>
+    <color name="primary_400">#ef5350</color>
+    <color name="primary_500">#f44336</color>
+    <color name="primary_600">#e53935</color>
+    <color name="primary_700">#d32f2f</color>
+    <color name="primary_800">#c62828</color>
+    <color name="primary_900">#b71c1c</color>
+
+    <color name="accent_100">#ffe57f</color>
+    <color name="accent_200">#ffd740</color>
+    <color name="accent_400">#ffc400</color>
+    <color name="accent_700">#ffab00</color>
+
+    <color name="black_12">#1e000000</color>
+    <color name="black_38">#60000000</color>
+    <color name="black_54">#89000000</color>
+    <color name="black_87">#dd000000</color>
+    <color name="black_100">#ff000000</color>
+
+    <color name="white_12">#1effffff</color>
+    <color name="white_50">#7fffffff</color>
+    <color name="white_70">#b2ffffff</color>
+    <color name="white_100">#ffffffff</color>
+
+    <color name="primary_light">@color/primary_100</color>
+    <color name="primary">@color/primary_500</color>
+    <color name="primary_dark">@color/primary_700</color>
+
+    <color name="accent_light">@color/accent_100</color>
+    <color name="accent">@color/accent_200</color>
+    <color name="accent_dark">@color/accent_400</color>
 </resources>
