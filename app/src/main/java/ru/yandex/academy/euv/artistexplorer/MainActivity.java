@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
 
 
     @Override
-    public void onArtistSelected(@NonNull String artistName) {
+    public void onArtistSelected(@NonNull Artist artist) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, ArtistDetailFragment.newInstance(artistName))
+                .replace(R.id.fragment_container, ArtistDetailFragment.newInstance(artist))
                 .addToBackStack(null)
                 .commit();
     }

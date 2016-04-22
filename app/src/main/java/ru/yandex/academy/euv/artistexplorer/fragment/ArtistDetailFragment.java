@@ -9,16 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import ru.yandex.academy.euv.artistexplorer.Artist;
 import ru.yandex.academy.euv.artistexplorer.R;
 
 public class ArtistDetailFragment extends Fragment {
     private static final String KEY_ARTIST_NAME = "key_artist_name";
 
-    private String artistName;
+    private Artist artist;
 
-    public static ArtistDetailFragment newInstance(@NonNull String artistName) {
+    public static ArtistDetailFragment newInstance(@NonNull Artist artist) {
         Bundle args = new Bundle();
-        args.putString(KEY_ARTIST_NAME, artistName);
+        args.putParcelable(KEY_ARTIST_NAME, artist);
         ArtistDetailFragment fragment = new ArtistDetailFragment();
         fragment.setArguments(args);
         return fragment;
@@ -30,9 +31,9 @@ public class ArtistDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            artistName = getArguments().getString(KEY_ARTIST_NAME);
+            artist = getArguments().getParcelable(KEY_ARTIST_NAME);
         } else {
-            artistName = savedInstanceState.getString(KEY_ARTIST_NAME);
+            artist = savedInstanceState.getParcelable(KEY_ARTIST_NAME);
         }
     }
 
@@ -41,13 +42,13 @@ public class ArtistDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_artist_detail, container, false);
-        ((TextView) view.findViewById(R.id.text_artist_name)).setText(artistName);
+        ((TextView) view.findViewById(R.id.text_artist_name)).setText(artist.getName());
         return view;
     }
 
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(KEY_ARTIST_NAME, artistName);
+        outState.putParcelable(KEY_ARTIST_NAME, artist);
     }
 }

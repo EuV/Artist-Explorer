@@ -5,15 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import ru.yandex.academy.euv.artistexplorer.App;
 import ru.yandex.academy.euv.artistexplorer.Artist;
 import ru.yandex.academy.euv.artistexplorer.JsonLoader;
 import ru.yandex.academy.euv.artistexplorer.JsonLoader.LoaderCallback;
@@ -25,8 +27,12 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
     private OnArtistSelectedListener host;
     private ArrayList<Artist> artistList;
 
+    private RecyclerView artistRecyclerView;
+    private ArtistAdapter artistAdapter;
+    private ProgressBar progressBar;
+
     public interface OnArtistSelectedListener {
-        void onArtistSelected(@NonNull String artistName);
+        void onArtistSelected(@NonNull Artist artist);
     }
 
 
@@ -47,12 +53,11 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_artist_list, container, false);
 
-        rootView.findViewById(R.id.button_select_artist).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                host.onArtistSelected("Бременские музыканты");
-            }
-        });
+        artistRecyclerView = (RecyclerView) rootView.findViewById(R.id.artist_recycler_view);
+        artistRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        artistRecyclerView.setAdapter(artistAdapter = new ArtistAdapter());
+
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
 
         return rootView;
     }
@@ -69,7 +74,7 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
         if (artistList == null) {
             JsonLoader.loadArtistList(this);
         } else {
-            ((TextView) getView().findViewById(R.id.text_tmp)).setText(artistList.get(0).getName());
+            onArtistListLoaded(artistList);
         }
     }
 
@@ -82,13 +87,10 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
     @Override
     public void onArtistListLoaded(@NonNull final ArrayList<Artist> artistList) {
-        App.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ArtistListFragment.this.artistList = artistList;
-                ((TextView) getView().findViewById(R.id.text_tmp)).setText(artistList.get(0).getName());
-            }
-        });
+        this.artistList = artistList;
+        artistAdapter.setArtistList(artistList);
+        artistRecyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
 
@@ -101,5 +103,53 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
     @Override
     public void failedToParseData() {
 
+    }
+
+
+    private class ArtistAdapter extends RecyclerView.Adapter<ArtistViewHolder> implements OnClickListener {
+        private ArrayList<Artist> artistList = new ArrayList<>();
+
+        public void setArtistList(@NonNull ArrayList<Artist> artistList) {
+            this.artistList = artistList;
+            notifyDataSetChanged();
+        }
+
+
+        @Override
+        public ArtistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View artistView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_artist_list_item, parent, false);
+            artistView.setOnClickListener(this);
+            return new ArtistViewHolder(artistView);
+        }
+
+
+        @Override
+        public void onBindViewHolder(ArtistViewHolder holder, int position) {
+            Artist artist = artistList.get(position);
+            holder.name.setText(artist.getName());
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return artistList.size();
+        }
+
+
+        @Override
+        public void onClick(View artistView) {
+            int index = artistRecyclerView.getChildAdapterPosition(artistView);
+            host.onArtistSelected(artistList.get(index));
+        }
+    }
+
+
+    private class ArtistViewHolder extends RecyclerView.ViewHolder {
+        final TextView name;
+
+        public ArtistViewHolder(View artistView) {
+            super(artistView);
+            name = (TextView) artistView.findViewById(R.id.text_artist_name);
+        }
     }
 }

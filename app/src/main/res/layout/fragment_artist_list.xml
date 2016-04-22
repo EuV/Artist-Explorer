@@ -3,16 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_tmp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <Button
-        android:id="@+id/button_select_artist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_gravity="center"
-        android:text="@android:string/ok"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/artist_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:visibility="gone"/>
 
 </FrameLayout>

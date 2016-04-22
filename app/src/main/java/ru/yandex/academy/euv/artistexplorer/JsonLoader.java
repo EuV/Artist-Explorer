@@ -60,7 +60,14 @@ public final class JsonLoader {
                         if (artistList == null) {
                             artistList = new ArrayList<>();
                         }
-                        callback.onArtistListLoaded(artistList);
+
+                        final ArrayList<Artist> finalArtistList = artistList;
+                        App.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onArtistListLoaded(finalArtistList);
+                            }
+                        });
                     } catch (JSONException | IOException e) {
                         callback.failedToParseData();
                     }
