@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">ArtistExplorer</string>
+    <string name="app_name">Artist Explorer</string>
+
+    <string name="label_artists">Artists</string>
 </resources>
