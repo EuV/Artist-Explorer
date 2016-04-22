@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Because of small size of the project (and YAGNI principle)
  * all these things are encapsulated in this single class.
  */
-public final class JSONLoader {
+public final class JsonLoader {
     private static final String ARTISTS_JSON_URL = "http://cache-spb02.cdn.yandex.net/download.cdn.yandex.net/mobilization-2016/artists.json";
     private static final OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -33,7 +33,7 @@ public final class JSONLoader {
         void failedToParseData();
     }
 
-    private JSONLoader() { /* */ }
+    private JsonLoader() { /* */ }
 
 
     /**

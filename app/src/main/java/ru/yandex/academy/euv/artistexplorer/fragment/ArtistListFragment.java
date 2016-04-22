@@ -15,10 +15,11 @@ import java.util.ArrayList;
 
 import ru.yandex.academy.euv.artistexplorer.App;
 import ru.yandex.academy.euv.artistexplorer.Artist;
-import ru.yandex.academy.euv.artistexplorer.JSONLoader;
+import ru.yandex.academy.euv.artistexplorer.JsonLoader;
+import ru.yandex.academy.euv.artistexplorer.JsonLoader.LoaderCallback;
 import ru.yandex.academy.euv.artistexplorer.R;
 
-public class ArtistListFragment extends Fragment implements JSONLoader.LoaderCallback {
+public class ArtistListFragment extends Fragment implements LoaderCallback {
     private static final String KEY_ARTIST_LIST = "key_artist_list";
 
     private OnArtistSelectedListener host;
@@ -66,7 +67,7 @@ public class ArtistListFragment extends Fragment implements JSONLoader.LoaderCal
         }
 
         if (artistList == null) {
-            JSONLoader.loadArtistList(this);
+            JsonLoader.loadArtistList(this);
         } else {
             ((TextView) getView().findViewById(R.id.text_tmp)).setText(artistList.get(0).getName());
         }
