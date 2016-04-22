@@ -29,12 +29,7 @@ public class ArtistDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            artist = getArguments().getParcelable(KEY_ARTIST_NAME);
-        } else {
-            artist = savedInstanceState.getParcelable(KEY_ARTIST_NAME);
-        }
+        artist = getArguments().getParcelable(KEY_ARTIST_NAME);
     }
 
 
@@ -44,11 +39,5 @@ public class ArtistDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_artist_detail, container, false);
         ((TextView) view.findViewById(R.id.text_artist_name)).setText(artist.getName());
         return view;
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(KEY_ARTIST_NAME, artist);
     }
 }
