@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -28,7 +30,7 @@ import ru.yandex.academy.euv.artistexplorer.ArtistListLoader.LoaderCallback;
 import ru.yandex.academy.euv.artistexplorer.R;
 import ru.yandex.academy.euv.artistexplorer.util.I18n;
 
-public class ArtistListFragment extends Fragment implements LoaderCallback {
+public class ArtistListFragment extends Fragment implements LoaderCallback, OnRefreshListener {
     private static final String KEY_ARTIST_LIST = "key_artist_list";
 
     private OnArtistSelectedListener host;
@@ -37,6 +39,7 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
     private RecyclerView artistRecyclerView;
     private ArtistAdapter artistAdapter;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout refresher;
 
     public interface OnArtistSelectedListener {
         void onArtistSelected(@NonNull Artist artist);
@@ -66,6 +69,10 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
 
+        refresher = (SwipeRefreshLayout) rootView.findViewById(R.id.artist_list_refresher);
+        refresher.setOnRefreshListener(this);
+        refresher.setColorSchemeResources(R.color.accent, R.color.primary);
+
         return rootView;
     }
 
@@ -79,7 +86,7 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
         }
 
         if (artistList == null) {
-            ArtistListLoader.getInstance().load(this, false);
+            loadArtistList(false);
         } else {
             onArtistListLoaded(artistList);
         }
@@ -93,18 +100,27 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
 
     @Override
+    public void onRefresh() {
+        loadArtistList(true);
+    }
+
+
+    @Override
     public void onArtistListLoaded(@NonNull final ArrayList<Artist> artistList) {
         if (!isAdded()) return;
         this.artistList = artistList;
         artistAdapter.setArtistList(artistList);
-        artistRecyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        refresher.setVisibility(View.VISIBLE);
+        refresher.setRefreshing(false);
     }
 
 
     @Override
     public void failedToLoadData(@NonNull RootCause rootCause) {
         if (!isAdded()) return;
+
+        refresher.setRefreshing(false);
 
         int resId;
         switch (rootCause) {
@@ -126,10 +142,16 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
         snackbar.setAction(R.string.label_retry, new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArtistListLoader.getInstance().load(ArtistListFragment.this, true);
+                loadArtistList(true);
             }
         });
         snackbar.show();
+    }
+
+
+    private void loadArtistList(boolean forced) {
+        ArtistListLoader.getInstance().load(this, forced);
+        refresher.setRefreshing(true);
     }
 
 
