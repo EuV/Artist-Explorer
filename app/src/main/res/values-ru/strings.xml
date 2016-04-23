@@ -2,6 +2,7 @@
     <string name="app_name">Исполнители</string>
 
     <string name="label_artists">Исполнители</string>
+    <string name="label_biography">Биография</string>
 
     <string name="format_albums_zero">%d альбомов</string>
     <string name="format_albums_one">%d альбом</string>

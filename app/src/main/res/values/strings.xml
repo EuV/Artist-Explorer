@@ -2,6 +2,7 @@
     <string name="app_name">Artist Explorer</string>
 
     <string name="label_artists">Artists</string>
+    <string name="label_biography">Biography</string>
 
     <string name="format_albums_zero">%d albums</string>
     <string name="format_albums_one">%d album</string>
