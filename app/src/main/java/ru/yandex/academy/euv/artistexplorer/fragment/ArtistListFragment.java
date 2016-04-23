@@ -21,8 +21,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 
 import ru.yandex.academy.euv.artistexplorer.Artist;
-import ru.yandex.academy.euv.artistexplorer.JsonLoader;
-import ru.yandex.academy.euv.artistexplorer.JsonLoader.LoaderCallback;
+import ru.yandex.academy.euv.artistexplorer.ArtistListLoader;
+import ru.yandex.academy.euv.artistexplorer.ArtistListLoader.RootCause;
+import ru.yandex.academy.euv.artistexplorer.ArtistListLoader.LoaderCallback;
 import ru.yandex.academy.euv.artistexplorer.R;
 import ru.yandex.academy.euv.artistexplorer.util.I18n;
 
@@ -77,7 +78,7 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
         }
 
         if (artistList == null) {
-            JsonLoader.loadArtistList(this);
+            ArtistListLoader.getInstance().load(this, false);
         } else {
             onArtistListLoaded(artistList);
         }
@@ -100,13 +101,7 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
 
     @Override
-    public void failedToDownloadData() {
-
-    }
-
-
-    @Override
-    public void failedToParseData() {
+    public void failedToLoadData(@NonNull RootCause rootCause) {
 
     }
 
