@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
@@ -66,6 +67,9 @@ public class ArtistListFragment extends Fragment implements LoaderCallback, OnRe
         artistRecyclerView = (RecyclerView) rootView.findViewById(R.id.artist_recycler_view);
         artistRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         artistRecyclerView.setAdapter(artistAdapter = new ArtistAdapter());
+
+        // Thus disabling toolbar expansion when artist list is scrolled
+        ViewCompat.setNestedScrollingEnabled(artistRecyclerView, false);
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
 

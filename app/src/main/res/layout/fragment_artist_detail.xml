@@ -2,28 +2,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_100"
     android:scrollbars="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView
-            android:id="@+id/img_artist_cover_small"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:contentDescription="@null"/>
-
-        <ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView
-            android:id="@+id/img_artist_cover_big"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:contentDescription="@null"/>
-
         <TextView
             android:id="@+id/text_artist_genres"
             style="@style/SecondaryText"
-            android:layout_below="@id/img_artist_cover_small"
             android:layout_marginLeft="@dimen/text_default_padding"
             android:layout_marginRight="@dimen/text_default_padding"
             android:layout_marginTop="@dimen/text_default_padding"/>

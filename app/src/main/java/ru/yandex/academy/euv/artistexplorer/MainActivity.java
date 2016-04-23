@@ -1,9 +1,14 @@
 package ru.yandex.academy.euv.artistexplorer;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.AppBarLayout.Behavior;
+import android.support.design.widget.AppBarLayout.Behavior.DragCallback;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout.LayoutParams;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,16 +18,40 @@ import android.view.View.OnClickListener;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistDetailFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment.OnArtistSelectedListener;
+import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
+
+import static android.R.anim.fade_in;
+import static android.R.anim.fade_out;
 
 public class MainActivity extends AppCompatActivity implements OnArtistSelectedListener {
-    private static final String KEY_LAST_VIEWED_ARTIST_NAME = "last_viewed_artist_name";
+    private static final String KEY_LAST_VIEWED_ARTIST = "key_last_viewed_artist";
 
     /**
-     * Used to set artist name into the toolbar in case of activity recreation.
-     * Another approach is to set title from fragment with artist details itself
-     * using callback in onAttach(), but this one is much more simpler.
+     * Used to set artist name and cover into the toolbar in case of activity recreation.
      */
-    private String lastViewedArtistName;
+    private Artist lastViewedArtist;
+
+    /**
+     * Indicates which fragment is currently visible.
+     */
+    private boolean artistDetailsVisible;
+
+    /**
+     * Responsible for status bar color and toolbar title.
+     */
+    private CollapsingToolbarLayout collapsingToolbar;
+
+    /**
+     * Responsible for toolbar expanding and collapsing.
+     */
+    private AppBarLayout appBarLayout;
+
+    /**
+     * Covers placed in a toolbar.
+     * Visible with artist details TODO: in vertical orientation.
+     */
+    private SquareDraweeView toolbarCoverSmall;
+    private SquareDraweeView toolbarCoverBig;
 
 
     @Override
@@ -46,23 +75,38 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_LAST_VIEWED_ARTIST_NAME, lastViewedArtistName);
+        outState.putParcelable(KEY_LAST_VIEWED_ARTIST, lastViewedArtist);
     }
 
 
-    /**
-     * Sets up support toolbar itself, its callback and 'UP' button behavior
-     */
+    @SuppressWarnings("deprecation")
     private void setUpToolbar(@Nullable Bundle savedInstanceState) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
         if (savedInstanceState != null) {
-            lastViewedArtistName = savedInstanceState.getString(KEY_LAST_VIEWED_ARTIST_NAME);
+            lastViewedArtist = savedInstanceState.getParcelable(KEY_LAST_VIEWED_ARTIST);
         }
 
-        syncToolbarState();
+        toolbarCoverSmall = (SquareDraweeView) findViewById(R.id.img_toolbar_cover_small);
+        toolbarCoverBig = (SquareDraweeView) findViewById(R.id.img_toolbar_cover_big);
+
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        collapsingToolbar.setStatusBarScrimColor(getResources().getColor(R.color.black_12));
+
+        // Expand/collapse toolbar via dragging only when artist details are shown
+        Behavior behavior = new Behavior();
+        behavior.setDragCallback(new DragCallback() {
+            @Override
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                return artistDetailsVisible;
+            }
+        });
+
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        LayoutParams params = (LayoutParams) appBarLayout.getLayoutParams();
+        params.setBehavior(behavior);
 
         toolbar.setNavigationOnClickListener(new OnClickListener() {
             @Override
@@ -77,32 +121,44 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
                 syncToolbarState();
             }
         });
+
+        syncToolbarState();
     }
 
 
     /**
-     * Shows or hides toolbar's 'UP' button when there is something on the back stack.
-     * In current implementation, the button is shown when artist details are on the screen
-     * and is hidden when list of artists is displayed.
-     * Also, manages toolbar title: sets it to artist name or resets to default value.
+     * Synchronizes toolbar visible state with fragment is shown.
+     * Called every time fragment back stack is changed.
      */
     private void syncToolbarState() {
-        boolean artistDetailsVisible = (getSupportFragmentManager().getBackStackEntryCount() != 0);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(artistDetailsVisible ? lastViewedArtistName : getString(R.string.label_artists));
-        actionBar.setDisplayHomeAsUpEnabled(artistDetailsVisible);
+        artistDetailsVisible = (getSupportFragmentManager().getBackStackEntryCount() != 0);
+
+        // Sets toolbar title to artist name or resets to default value
+        collapsingToolbar.setTitle(artistDetailsVisible ? lastViewedArtist.getName() : getString(R.string.label_artists));
+
+        if (artistDetailsVisible) {
+            toolbarCoverSmall.setImageURI(Uri.parse(lastViewedArtist.getCover().getSmall()));
+            toolbarCoverBig.setImageURI(Uri.parse(lastViewedArtist.getCover().getBig()));
+        }
+
+        // Expand toolbar with artist's cover if needed
+        appBarLayout.setExpanded(artistDetailsVisible);
+
+        // Shows toolbar's 'UP' button when artist details are visible.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(artistDetailsVisible);
     }
 
 
     @Override
     public void onArtistSelected(@NonNull Artist artist) {
 
-        // Save artist name before placing fragment since fragment manipulations
-        // will trigger syncToolbarState() which uses this name
-        lastViewedArtistName = artist.getName();
+        // Save artist before placing fragment since fragment manipulations
+        // will trigger syncToolbarState() which uses artist's name and cover
+        lastViewedArtist = artist;
 
         getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(fade_in, fade_out, fade_in, fade_out)
                 .replace(R.id.fragment_container, ArtistDetailFragment.newInstance(artist))
                 .addToBackStack(null)
                 .commit();
