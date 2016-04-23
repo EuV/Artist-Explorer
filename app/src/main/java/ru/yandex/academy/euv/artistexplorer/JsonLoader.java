@@ -1,6 +1,9 @@
 package ru.yandex.academy.euv.artistexplorer;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
@@ -9,8 +12,12 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Facade for manipulating with JSON data in the application.
@@ -19,6 +26,8 @@ import java.util.ArrayList;
  * all these things are encapsulated in this single class.
  */
 public final class JsonLoader {
+    private static final String TAG = JsonLoader.class.getSimpleName();
+    private static final String FILENAME = "artists.json";
     private static final String ARTISTS_JSON_URL = "http://cache-spb02.cdn.yandex.net/download.cdn.yandex.net/mobilization-2016/artists.json";
     private static final OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -43,6 +52,16 @@ public final class JsonLoader {
      * should be invoked after onCreateView() returns the root view).
      */
     public static void loadArtistList(final LoaderCallback callback) {
+        String rawData = readFromDisk();
+        if (rawData != null) {
+            ArrayList<Artist> artistList = (ArrayList<Artist>) JSON.parseArray(rawData, Artist.class);
+            if (artistList == null) {
+                artistList = new ArrayList<>();
+            }
+            callback.onArtistListLoaded(artistList);
+            return;
+        }
+
         Request request = new Request.Builder().url(ARTISTS_JSON_URL).build();
         okHttpClient.newCall(request).enqueue(new Callback() {
 
@@ -56,6 +75,9 @@ public final class JsonLoader {
                 if (response.isSuccessful()) {
                     try {
                         String rawData = response.body().string();
+
+                        saveToDisk(rawData);
+
                         ArrayList<Artist> artistList = (ArrayList<Artist>) JSON.parseArray(rawData, Artist.class);
                         if (artistList == null) {
                             artistList = new ArrayList<>();
@@ -76,5 +98,40 @@ public final class JsonLoader {
                 }
             }
         });
+    }
+
+
+    private static void saveToDisk(String rawData) {
+        try {
+            FileOutputStream fos = App.getContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            fos.write(rawData.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to save server response to internal storage", e);
+        }
+    }
+
+
+    @Nullable
+    private static String readFromDisk() {
+        String rawData = null;
+
+        try {
+            FileInputStream fis = App.getContext().openFileInput(FILENAME);
+
+            // Read the whole file
+            Scanner scanner = new Scanner(fis).useDelimiter("\\A");
+            if (scanner.hasNext()) {
+                rawData = scanner.next();
+            }
+
+            fis.close();
+        } catch (FileNotFoundException e) {
+            // Just move on
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to read data from internal storage", e);
+        }
+
+        return rawData;
     }
 }
