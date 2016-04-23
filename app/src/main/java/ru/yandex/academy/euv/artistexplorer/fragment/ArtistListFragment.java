@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -93,6 +94,7 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
     @Override
     public void onArtistListLoaded(@NonNull final ArrayList<Artist> artistList) {
+        if (!isAdded()) return;
         this.artistList = artistList;
         artistAdapter.setArtistList(artistList);
         artistRecyclerView.setVisibility(View.VISIBLE);
@@ -102,7 +104,32 @@ public class ArtistListFragment extends Fragment implements LoaderCallback {
 
     @Override
     public void failedToLoadData(@NonNull RootCause rootCause) {
+        if (!isAdded()) return;
 
+        int resId;
+        switch (rootCause) {
+            case NO_CONNECTION:
+                resId = R.string.error_no_network_connection;
+                break;
+            case IO_ERROR:
+                resId = R.string.error_failed_to_load_data;
+                break;
+            case PARSING_ERROR:
+                resId = R.string.error_failed_to_parse_data;
+                break;
+            default:
+                resId = R.string.error_unknown;
+                break;
+        }
+
+        Snackbar snackbar = Snackbar.make(getView(), resId, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.label_retry, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArtistListLoader.getInstance().load(ArtistListFragment.this, true);
+            }
+        });
+        snackbar.show();
     }
 
 

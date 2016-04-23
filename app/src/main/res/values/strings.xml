@@ -3,6 +3,7 @@
 
     <string name="label_artists">Artists</string>
     <string name="label_biography">Biography</string>
+    <string name="label_retry">Retry</string>
 
     <string name="format_albums_zero">%d albums</string>
     <string name="format_albums_one">%d album</string>
@@ -17,6 +18,11 @@
     <string name="format_tracks_X1">@string/format_tracks_zero</string>
     <string name="format_tracks_X2_4">@string/format_tracks_zero</string>
     <string name="format_tracks_X5_0">@string/format_tracks_zero</string>
+
+    <string name="error_no_network_connection">No network connection</string>
+    <string name="error_failed_to_load_data">Failed to load data</string>
+    <string name="error_failed_to_parse_data">Failed to parse data</string>
+    <string name="error_unknown">Unknown error</string>
 
     <string name="sep_by_comma" translatable="false">%1$s, %2$s</string>
     <string name="sep_by_middot" translatable="false">%1$s · %2$s</string>
