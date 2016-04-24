@@ -21,7 +21,7 @@ public class Artist implements Parcelable {
     private String description;
     private Cover cover;
 
-    public Artist() { /* default constructor for JSON parser */ }
+    public Artist() { /* default constructor for the JSON parser */ }
 
     private Artist(Parcel in) {
         id = in.readInt();
@@ -132,7 +132,7 @@ public class Artist implements Parcelable {
         private String small;
         private String big;
 
-        public Cover() { /* default constructor for JSON parser */ }
+        public Cover() { /* default constructor for the JSON parser */ }
 
         private Cover(Parcel in) {
             small = in.readString();

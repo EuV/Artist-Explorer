@@ -23,6 +23,8 @@ import static org.mockito.Mockito.when;
 
 /**
  * A bit awful example of Unit testing, but half a loaf is better than none.
+ * Checks that the application chooses right string endings depending
+ * on the last digit of a given number.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(App.class)

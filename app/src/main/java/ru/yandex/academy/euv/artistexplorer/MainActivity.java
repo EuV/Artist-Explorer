@@ -23,6 +23,11 @@ import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
 import static android.R.anim.fade_in;
 import static android.R.anim.fade_out;
 
+/**
+ * Single activity application. Displays list of artists and artist details in
+ * {@link ArtistListFragment} and {@link ArtistDetailsFragment} accordingly.
+ * Uses support action bar collapsible in portrait mode.
+ */
 public class MainActivity extends AppCompatActivity implements OnArtistSelectedListener {
     private static final String KEY_LAST_VIEWED_ARTIST = "key_last_viewed_artist";
 
@@ -54,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     private SquareDraweeView toolbarCoverBig;
 
 
+    /**
+     * When creating the first time, displays {@link ArtistListFragment}.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     }
 
 
+    /**
+     * Sets up all the things related to the collapsible support action bar.
+     */
     @SuppressWarnings("deprecation")
     private void setUpToolbar(@Nullable Bundle savedInstanceState) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -94,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
 
-        // Only in portrait orientation
+        // Some tuning required only in portrait orientation
         if (collapsingToolbar != null) {
             collapsingToolbar.setStatusBarScrimColor(getResources().getColor(R.color.black_12));
 
@@ -112,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
             params.setBehavior(behavior);
         }
 
+        // Callback of the 'back arrow' button in the toolbar
         toolbar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     private void syncToolbarState() {
         artistDetailsVisible = (getSupportFragmentManager().getBackStackEntryCount() != 0);
 
-        // Shows toolbar's 'UP' button when artist details are visible.
+        // Shows toolbar's 'UP' button when artist details are visible
         getSupportActionBar().setDisplayHomeAsUpEnabled(artistDetailsVisible);
 
         String title = artistDetailsVisible ? lastViewedArtist.getName() : getString(R.string.label_artists);
@@ -160,10 +172,14 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     }
 
 
+    /**
+     * Callback of the {@link ArtistListFragment}.
+     * If called, it's time to show some artist details in {@link ArtistDetailsFragment}.
+     */
     @Override
     public void onArtistSelected(@NonNull Artist artist) {
 
-        // Save artist before placing fragment since fragment manipulations
+        // Save the artist before placing a fragment since fragment manipulations
         // will trigger syncToolbarState() which uses artist's name and cover
         lastViewedArtist = artist;
 

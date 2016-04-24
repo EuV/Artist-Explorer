@@ -9,6 +9,10 @@ import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFacto
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.okhttp.OkHttpClient;
 
+/**
+ * Extends default {@link Application} implementation providing some functionality
+ * available throughout the app. Also used to initialize Fresco library.
+ */
 public class App extends Application {
     private static Thread uiThread;
     private static Context context;

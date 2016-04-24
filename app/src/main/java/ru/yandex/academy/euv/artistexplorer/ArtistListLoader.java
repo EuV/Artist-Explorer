@@ -26,15 +26,15 @@ import static ru.yandex.academy.euv.artistexplorer.ArtistListLoader.State.*;
 
 /**
  * Provides a list of Artists to the application.
- * <p>
- * Loads data from web or cache and parses it.
+ * <p/>
+ * Loads data from the web or from cache and parses it.
  * Returns to the caller list of artists or error code if any.
- * <p>
+ * <p/>
  * For ease of reading and better maintaining of data flow, the loader
  * is implemented as a singleton state machine running on its own thread.
- * <p>
+ * <p/>
  * There are many ways to improve the loader, but for now
- * the current implementation will be quite enough.
+ * the current implementation is quite enough.
  */
 public final class ArtistListLoader extends HandlerThread {
     private static final String TAG = ArtistListLoader.class.getSimpleName();
@@ -66,6 +66,16 @@ public final class ArtistListLoader extends HandlerThread {
     private RootCause rootCause;
 
 
+    /**
+     * Should be implemented by the caller in order to receive the data loaded
+     * or to be informed if any error has occurred.
+     */
+    public interface LoaderCallback {
+        void onArtistListLoaded(@NonNull ArrayList<Artist> artistList);
+        void failedToLoadData(@NonNull RootCause rootCause);
+    }
+
+
     private ArtistListLoader() {
         super(TAG + "Thread");
         start();
@@ -84,7 +94,7 @@ public final class ArtistListLoader extends HandlerThread {
     /**
      * Entry point. Is called on the UI thread.
      * The rest of the methods are invoked on a loader thread.
-     * <p>
+     * <p/>
      * May return data almost immediate (e.g. from cache), so must be called
      * after the target view has been prepared (i.e. in current implementation
      * should be invoked after onCreateView() returns the root view).
@@ -100,7 +110,7 @@ public final class ArtistListLoader extends HandlerThread {
 
 
     /**
-     * Finite-state machine. Loads list of artists from web or cache
+     * Finite-state machine. Loads list of artists from the web or from cache
      * or returns appropriate error code.
      *
      * @param callback for return of artist list or error code.
@@ -219,9 +229,9 @@ public final class ArtistListLoader extends HandlerThread {
 
 
     /**
-     * Loads list of artists from cache (reads JSON string from internal storage).
+     * Loads list of artists from the cache (reads JSON string from internal storage).
      *
-     * @return true if there was something in cache, false otherwise.
+     * @return true if there is something in the cache, false otherwise.
      */
     private boolean loadFromDisk() {
         Log.d(TAG, "loadFromDisk()");
@@ -341,11 +351,5 @@ public final class ArtistListLoader extends HandlerThread {
         NO_CONNECTION,
         IO_ERROR,
         PARSING_ERROR
-    }
-
-
-    public interface LoaderCallback {
-        void onArtistListLoaded(@NonNull ArrayList<Artist> artistList);
-        void failedToLoadData(@NonNull RootCause rootCause);
     }
 }

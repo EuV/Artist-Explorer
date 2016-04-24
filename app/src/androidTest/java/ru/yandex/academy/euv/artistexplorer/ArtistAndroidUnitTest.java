@@ -1,6 +1,7 @@
 package ru.yandex.academy.euv.artistexplorer;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
@@ -12,6 +13,10 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+/**
+ * A Unit test requires some part of a real Android environment, thus running on a device.
+ * Checks that {@link Artist} class has implemented {@link Parcelable} interface properly.
+ */
 @RunWith(AndroidJUnit4.class)
 public class ArtistAndroidUnitTest {
     private static final int ID = 1;

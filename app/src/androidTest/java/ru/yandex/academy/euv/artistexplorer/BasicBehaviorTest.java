@@ -14,6 +14,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 
+/**
+ * UI test running on a device.
+ * Opens an artist details and returns to the list of artists.
+ */
 @RunWith(AndroidJUnit4.class)
 public class BasicBehaviorTest {
 

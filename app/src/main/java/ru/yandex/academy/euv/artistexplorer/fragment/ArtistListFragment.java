@@ -31,6 +31,11 @@ import ru.yandex.academy.euv.artistexplorer.ArtistListLoader.LoaderCallback;
 import ru.yandex.academy.euv.artistexplorer.R;
 import ru.yandex.academy.euv.artistexplorer.util.I18n;
 
+/**
+ * Fragment represents 'first' application screen with a list of artists.
+ * Receives data via {@link ArtistListLoader}; displays them using {@link RecyclerView}.
+ * Looks the same in both landscape and portrait screen orientation.
+ */
 public class ArtistListFragment extends Fragment implements LoaderCallback, OnRefreshListener {
     private static final String KEY_ARTIST_LIST = "key_artist_list";
 
@@ -42,6 +47,11 @@ public class ArtistListFragment extends Fragment implements LoaderCallback, OnRe
     private ProgressBar progressBar;
     private SwipeRefreshLayout refresher;
 
+
+    /**
+     * Should be implemented by host activity to be notified
+     * when user selects a certain artist.
+     */
     public interface OnArtistSelectedListener {
         void onArtistSelected(@NonNull Artist artist);
     }
@@ -103,12 +113,22 @@ public class ArtistListFragment extends Fragment implements LoaderCallback, OnRe
     }
 
 
+    /**
+     * Callback for {@link SwipeRefreshLayout}, called when swiping down
+     * at the top of the artist list.
+     */
     @Override
     public void onRefresh() {
         loadArtistList(true);
     }
 
 
+    /**
+     * Callback for {@link ArtistListLoader}, called when a list of artists
+     * has been loaded successfully. May also be called directly
+     * from the fragment itself in case of its recreation.
+     * Performs UI updates and stores received data.
+     */
     @Override
     public void onArtistListLoaded(@NonNull final ArrayList<Artist> artistList) {
         if (!isAdded()) return;
@@ -120,6 +140,11 @@ public class ArtistListFragment extends Fragment implements LoaderCallback, OnRe
     }
 
 
+    /**
+     * Callback for {@link ArtistListLoader}, called when a list of artists
+     * hasn't been loaded due to error occurred. Shows message is appropriate
+     * for the given {@link RootCause} in a {@link Snackbar}.
+     */
     @Override
     public void failedToLoadData(@NonNull RootCause rootCause) {
         if (!isAdded()) return;
@@ -153,12 +178,24 @@ public class ArtistListFragment extends Fragment implements LoaderCallback, OnRe
     }
 
 
+    /**
+     * Initiates loading of artist list and sets refreshing animation.
+     * This animation won't be visible when fragment has just been created and
+     * fetches the data: an entire list view is hidden and a progress bar is shown.
+     *
+     * @param forced if true, the loader will be forced to load data from the web,
+     *               even if it was successfully downloaded and cached previously.
+     */
     private void loadArtistList(boolean forced) {
         ArtistListLoader.getInstance().load(this, forced);
         refresher.setRefreshing(true);
     }
 
 
+    /**
+     * Data adapter for the {@link RecyclerView}. Nothing unusual except that
+     * covers are loaded asynchronously using Fresco library developed by Facebook.
+     */
     private class ArtistAdapter extends RecyclerView.Adapter<ArtistViewHolder> implements OnClickListener {
         private ArrayList<Artist> artistList = new ArrayList<>();
 
