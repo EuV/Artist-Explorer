@@ -190,7 +190,7 @@ public final class ArtistListLoader extends HandlerThread {
                 rawData = response.body().string();
             }
         } catch (IOException e) {
-            Log.e(TAG, "Failed to receive data from the server", e);
+            Log.d(TAG, "Failed to receive data from the server", e);
         }
 
         if (rawData == null) {
@@ -213,7 +213,7 @@ public final class ArtistListLoader extends HandlerThread {
             fos.write(rawData.getBytes());
             fos.close();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to save server response to internal storage", e);
+            Log.d(TAG, "Failed to save server response to internal storage", e);
         }
     }
 
@@ -240,7 +240,7 @@ public final class ArtistListLoader extends HandlerThread {
         } catch (FileNotFoundException e) {
             // Just move on
         } catch (IOException e) {
-            Log.e(TAG, "Failed to read data from internal storage", e);
+            Log.d(TAG, "Failed to read data from internal storage", e);
         }
 
         return rawData != null;
@@ -259,7 +259,7 @@ public final class ArtistListLoader extends HandlerThread {
         try {
             artistList = (ArrayList<Artist>) JSON.parseArray(rawData, Artist.class);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to parse JSON string", e);
+            Log.d(TAG, "Failed to parse JSON string", e);
         }
 
         if (artistList == null) {
