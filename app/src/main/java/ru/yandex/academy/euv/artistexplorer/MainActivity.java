@@ -15,7 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import ru.yandex.academy.euv.artistexplorer.fragment.ArtistDetailFragment;
+import ru.yandex.academy.euv.artistexplorer.fragment.ArtistDetailsFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment.OnArtistSelectedListener;
 import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(fade_in, fade_out, fade_in, fade_out)
-                .replace(R.id.fragment_container, ArtistDetailFragment.newInstance(artist))
+                .replace(R.id.fragment_container, ArtistDetailsFragment.newInstance(artist))
                 .addToBackStack(null)
                 .commit();
     }

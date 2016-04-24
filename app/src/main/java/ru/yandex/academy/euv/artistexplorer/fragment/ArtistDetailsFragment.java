@@ -16,15 +16,15 @@ import ru.yandex.academy.euv.artistexplorer.R;
 import ru.yandex.academy.euv.artistexplorer.util.I18n;
 import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
 
-public class ArtistDetailFragment extends Fragment {
+public class ArtistDetailsFragment extends Fragment {
     private static final String KEY_ARTIST_NAME = "key_artist_name";
 
     private Artist artist;
 
-    public static ArtistDetailFragment newInstance(@NonNull Artist artist) {
+    public static ArtistDetailsFragment newInstance(@NonNull Artist artist) {
         Bundle args = new Bundle();
         args.putParcelable(KEY_ARTIST_NAME, artist);
-        ArtistDetailFragment fragment = new ArtistDetailFragment();
+        ArtistDetailsFragment fragment = new ArtistDetailsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,7 +40,7 @@ public class ArtistDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_artist_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_artist_details, container, false);
 
         // Only in landscape orientation
         if (rootView.findViewById(R.id.landscape_cover) != null) {
