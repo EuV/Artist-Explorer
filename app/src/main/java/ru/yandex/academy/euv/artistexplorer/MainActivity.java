@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
 
     /**
      * Covers placed in a toolbar.
-     * Visible with artist details TODO: in vertical orientation.
+     * Visible with artist details in portrait orientation.
      */
     private SquareDraweeView toolbarCoverSmall;
     private SquareDraweeView toolbarCoverBig;
@@ -93,20 +93,24 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
         toolbarCoverBig = (SquareDraweeView) findViewById(R.id.img_toolbar_cover_big);
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
-        collapsingToolbar.setStatusBarScrimColor(getResources().getColor(R.color.black_12));
 
-        // Expand/collapse toolbar via dragging only when artist details are shown
-        Behavior behavior = new Behavior();
-        behavior.setDragCallback(new DragCallback() {
-            @Override
-            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                return artistDetailsVisible;
-            }
-        });
+        // Only in portrait orientation
+        if (collapsingToolbar != null) {
+            collapsingToolbar.setStatusBarScrimColor(getResources().getColor(R.color.black_12));
 
-        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        LayoutParams params = (LayoutParams) appBarLayout.getLayoutParams();
-        params.setBehavior(behavior);
+            // Expand/collapse toolbar via dragging only when artist details are shown
+            Behavior behavior = new Behavior();
+            behavior.setDragCallback(new DragCallback() {
+                @Override
+                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                    return artistDetailsVisible;
+                }
+            });
+
+            appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+            LayoutParams params = (LayoutParams) appBarLayout.getLayoutParams();
+            params.setBehavior(behavior);
+        }
 
         toolbar.setNavigationOnClickListener(new OnClickListener() {
             @Override
@@ -133,8 +137,18 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     private void syncToolbarState() {
         artistDetailsVisible = (getSupportFragmentManager().getBackStackEntryCount() != 0);
 
-        // Sets toolbar title to artist name or resets to default value
-        collapsingToolbar.setTitle(artistDetailsVisible ? lastViewedArtist.getName() : getString(R.string.label_artists));
+        // Shows toolbar's 'UP' button when artist details are visible.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(artistDetailsVisible);
+
+        String title = artistDetailsVisible ? lastViewedArtist.getName() : getString(R.string.label_artists);
+
+        // In landscape orientation, just set the title and return
+        if (collapsingToolbar == null) {
+            getSupportActionBar().setTitle(title);
+            return;
+        }
+
+        collapsingToolbar.setTitle(title);
 
         if (artistDetailsVisible) {
             toolbarCoverSmall.setImageURI(Uri.parse(lastViewedArtist.getCover().getSmall()));
@@ -143,9 +157,6 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
 
         // Expand toolbar with artist's cover if needed
         appBarLayout.setExpanded(artistDetailsVisible);
-
-        // Shows toolbar's 'UP' button when artist details are visible.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(artistDetailsVisible);
     }
 
 
