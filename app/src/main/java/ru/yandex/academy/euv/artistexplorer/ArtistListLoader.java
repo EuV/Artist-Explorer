@@ -35,6 +35,8 @@ import static ru.yandex.academy.euv.artistexplorer.ArtistListLoader.State.*;
  * <p/>
  * There are many ways to improve the loader, but for now
  * the current implementation is quite enough.
+ * <p/>
+ * TODO: Less hardcore, less leaks
  */
 public final class ArtistListLoader extends HandlerThread {
     private static final String TAG = ArtistListLoader.class.getSimpleName();
@@ -72,6 +74,7 @@ public final class ArtistListLoader extends HandlerThread {
      */
     public interface LoaderCallback {
         void onArtistListLoaded(@NonNull ArrayList<Artist> artistList);
+
         void failedToLoadData(@NonNull RootCause rootCause);
     }
 

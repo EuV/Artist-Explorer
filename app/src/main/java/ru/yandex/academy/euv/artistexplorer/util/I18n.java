@@ -5,6 +5,8 @@ import ru.yandex.academy.euv.artistexplorer.R;
 
 /**
  * Utility class selects appropriate unit endings.
+ * <p/>
+ * TODO: Replace this workaround with Plurals
  */
 public final class I18n {
     private I18n() { /* */ }
