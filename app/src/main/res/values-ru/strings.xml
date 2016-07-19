@@ -4,6 +4,8 @@
     <string name="label_artists">Исполнители</string>
     <string name="label_biography">Биография</string>
     <string name="label_retry">Повторить</string>
+    <string name="label_about">О программе</string>
+    <string name="label_feedback">Обратная связь</string>
 
     <string name="format_albums_zero">%d альбомов</string>
     <string name="format_albums_one">%d альбом</string>
