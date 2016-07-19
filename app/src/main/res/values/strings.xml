@@ -6,6 +6,9 @@
     <string name="label_retry">Retry</string>
     <string name="label_about">About</string>
     <string name="label_feedback">Feedback</string>
+    <string name="label_music">Music</string>
+    <string name="label_radio">Radio</string>
+    <string name="label_headphones_connected">Headphones are connected</string>
 
     <string name="text_about">A demo application designed for Yandex Mobilizatoin 2016.\nDisplays information about pop musicians.</string>
 
