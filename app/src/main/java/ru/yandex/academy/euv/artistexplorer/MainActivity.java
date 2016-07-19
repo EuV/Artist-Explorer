@@ -28,6 +28,7 @@ import static android.R.anim.fade_out;
  * {@link ArtistListFragment} and {@link ArtistDetailsFragment} accordingly.
  * Uses support action bar collapsible in portrait mode.
  */
+@SuppressWarnings("ConstantConditions")
 public class MainActivity extends AppCompatActivity implements OnArtistSelectedListener {
     private static final String KEY_LAST_VIEWED_ARTIST = "key_last_viewed_artist";
 

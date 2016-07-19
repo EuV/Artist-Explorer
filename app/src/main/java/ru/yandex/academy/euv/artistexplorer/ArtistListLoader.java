@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,8 +36,6 @@ import static ru.yandex.academy.euv.artistexplorer.ArtistListLoader.State.*;
  * <p/>
  * There are many ways to improve the loader, but for now
  * the current implementation is quite enough.
- * <p/>
- * TODO: Less hardcore, less leaks
  */
 public final class ArtistListLoader extends HandlerThread {
     private static final String TAG = ArtistListLoader.class.getSimpleName();
@@ -47,7 +46,7 @@ public final class ArtistListLoader extends HandlerThread {
 
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Handler loaderThreadHandler;
-    private LoaderCallback callback;
+    private WeakReference<LoaderCallback> callbackReference;
 
     /**
      * List of artists as a JSON string.
@@ -103,10 +102,11 @@ public final class ArtistListLoader extends HandlerThread {
      * should be invoked after onCreateView() returns the root view).
      */
     public void load(final LoaderCallback callback, final boolean forced) {
+        final WeakReference<LoaderCallback> callbackReference = new WeakReference<>(callback);
         loaderThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                loadInBackground(callback, forced);
+                loadInBackground(callbackReference, forced);
             }
         });
     }
@@ -116,13 +116,13 @@ public final class ArtistListLoader extends HandlerThread {
      * Finite-state machine. Loads list of artists from the web or from cache
      * or returns appropriate error code.
      *
-     * @param callback for return of artist list or error code.
-     * @param forced   load data from web ignoring cache.
+     * @param callbackReference for return of artist list or error code.
+     * @param forced            load data from web ignoring cache.
      */
-    private void loadInBackground(LoaderCallback callback, boolean forced) {
+    private void loadInBackground(WeakReference<LoaderCallback> callbackReference, boolean forced) {
         Log.d(TAG, "loadInBackground()");
 
-        this.callback = callback;
+        this.callbackReference = callbackReference;
 
         State state = forced ? CHECK_CONNECTION : LOAD_FROM_DISK;
 
@@ -290,6 +290,12 @@ public final class ArtistListLoader extends HandlerThread {
     private void success() {
         Log.d(TAG, "success()");
 
+        final LoaderCallback callback = callbackReference.get();
+        if (callback == null) {
+            Log.d(TAG, "Callback reference has been erased");
+            return;
+        }
+
         // Copy list due to multithreaded access to it
         final ArrayList<Artist> finalArtistList = new ArrayList<>(artistList);
 
@@ -317,6 +323,12 @@ public final class ArtistListLoader extends HandlerThread {
      */
     private void failure() {
         Log.d(TAG, "failure()");
+
+        final LoaderCallback callback = callbackReference.get();
+        if (callback == null) {
+            Log.d(TAG, "Callback reference has been erased");
+            return;
+        }
 
         // Don't shoot your leg
         final RootCause finalRootCause = rootCause;
