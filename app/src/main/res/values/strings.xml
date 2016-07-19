@@ -7,6 +7,8 @@
     <string name="label_about">About</string>
     <string name="label_feedback">Feedback</string>
 
+    <string name="text_about">A demo application designed for Yandex Mobilizatoin 2016.\nDisplays information about pop musicians.</string>
+
     <string name="format_albums_zero">%d albums</string>
     <string name="format_albums_one">%d album</string>
     <string name="format_albums_ten_twenty">@string/format_albums_zero</string>

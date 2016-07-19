@@ -8,6 +8,7 @@ import android.support.design.widget.AppBarLayout.Behavior;
 import android.support.design.widget.AppBarLayout.Behavior.DragCallback;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout.LayoutParams;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import ru.yandex.academy.euv.artistexplorer.fragment.AboutFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistDetailsFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment.OnArtistSelectedListener;
@@ -24,6 +26,9 @@ import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
 
 import static android.R.anim.fade_in;
 import static android.R.anim.fade_out;
+import static ru.yandex.academy.euv.artistexplorer.MainActivity.VisibleFragment.ABOUT;
+import static ru.yandex.academy.euv.artistexplorer.MainActivity.VisibleFragment.ARTIST_DETAILS;
+import static ru.yandex.academy.euv.artistexplorer.MainActivity.VisibleFragment.ARTIST_LIST;
 
 /**
  * Single activity application. Displays list of artists and artist details in
@@ -42,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     /**
      * Indicates which fragment is currently visible.
      */
-    private boolean artistDetailsVisible;
+    private VisibleFragment visibleFragment;
 
     /**
      * Responsible for status bar color and toolbar title.
@@ -94,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.about:
+                if (visibleFragment != ABOUT) {
+                    replaceFragment(AboutFragment.newInstance());
+                }
                 return true;
             case R.id.feedback:
                 return true;
@@ -137,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
             behavior.setDragCallback(new DragCallback() {
                 @Override
                 public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                    return artistDetailsVisible;
+                    return visibleFragment == ARTIST_DETAILS;
                 }
             });
 
@@ -170,12 +178,24 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
      * Called every time fragment back stack is changed.
      */
     private void syncToolbarState() {
-        artistDetailsVisible = (getSupportFragmentManager().getBackStackEntryCount() != 0);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Class<?> fragmentClass = (fragment == null) ? ArtistListFragment.class : fragment.getClass();
 
-        // Shows toolbar's 'UP' button when artist details are visible
-        getSupportActionBar().setDisplayHomeAsUpEnabled(artistDetailsVisible);
+        String title;
 
-        String title = artistDetailsVisible ? lastViewedArtist.getName() : getString(R.string.label_artists);
+        if (fragmentClass == ArtistListFragment.class) {
+            visibleFragment = ARTIST_LIST;
+            title = getString(R.string.label_artists);
+        } else if (fragmentClass == ArtistDetailsFragment.class) {
+            visibleFragment = ARTIST_DETAILS;
+            title = lastViewedArtist.getName();
+        } else {
+            visibleFragment = ABOUT;
+            title = getString(R.string.label_about);
+        }
+
+        // Shows toolbar's 'UP' button when 'artist details' or 'about' pages are visible
+        getSupportActionBar().setDisplayHomeAsUpEnabled(visibleFragment != ARTIST_LIST);
 
         // In landscape orientation, just set the title and return
         if (collapsingToolbar == null) {
@@ -185,13 +205,13 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
 
         collapsingToolbar.setTitle(title);
 
-        if (artistDetailsVisible) {
+        if (visibleFragment == ARTIST_DETAILS) {
             toolbarCoverSmall.setImageURI(Uri.parse(lastViewedArtist.getCover().getSmall()));
             toolbarCoverBig.setImageURI(Uri.parse(lastViewedArtist.getCover().getBig()));
         }
 
         // Expand toolbar with artist's cover if needed
-        appBarLayout.setExpanded(artistDetailsVisible);
+        appBarLayout.setExpanded(visibleFragment == ARTIST_DETAILS);
     }
 
 
@@ -206,11 +226,23 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
         // will trigger syncToolbarState() which uses artist's name and cover
         lastViewedArtist = artist;
 
+        replaceFragment(ArtistDetailsFragment.newInstance(artist));
+    }
+
+
+    private void replaceFragment(@NonNull Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(fade_in, fade_out, fade_in, fade_out)
-                .replace(R.id.fragment_container, ArtistDetailsFragment.newInstance(artist))
+                .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+
+    enum VisibleFragment {
+        ARTIST_LIST,
+        ARTIST_DETAILS,
+        ABOUT
     }
 }

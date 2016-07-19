@@ -24,13 +24,13 @@ import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
  * description (if large enough) is scrolled independently.
  */
 public class ArtistDetailsFragment extends Fragment {
-    private static final String KEY_ARTIST_NAME = "key_artist_name";
+    private static final String KEY_ARTIST = "key_artist";
 
     private Artist artist;
 
     public static ArtistDetailsFragment newInstance(@NonNull Artist artist) {
         Bundle args = new Bundle();
-        args.putParcelable(KEY_ARTIST_NAME, artist);
+        args.putParcelable(KEY_ARTIST, artist);
         ArtistDetailsFragment fragment = new ArtistDetailsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -40,7 +40,7 @@ public class ArtistDetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        artist = getArguments().getParcelable(KEY_ARTIST_NAME);
+        artist = getArguments().getParcelable(KEY_ARTIST);
     }
 
 

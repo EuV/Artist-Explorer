@@ -7,6 +7,8 @@
     <string name="label_about">О программе</string>
     <string name="label_feedback">Обратная связь</string>
 
+    <string name="text_about">Тестовое приложение для проекта «Мобилизация» 2016.\nОтображает информацию об исполнителях популярной музыки.</string>
+
     <string name="format_albums_zero">%d альбомов</string>
     <string name="format_albums_one">%d альбом</string>
     <string name="format_albums_ten_twenty">@string/format_albums_zero</string>
