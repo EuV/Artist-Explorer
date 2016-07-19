@@ -1,5 +1,6 @@
 package ru.yandex.academy.euv.artistexplorer;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +39,8 @@ import static ru.yandex.academy.euv.artistexplorer.MainActivity.VisibleFragment.
 @SuppressWarnings("ConstantConditions")
 public class MainActivity extends AppCompatActivity implements OnArtistSelectedListener {
     private static final String KEY_LAST_VIEWED_ARTIST = "key_last_viewed_artist";
+    private static final String FEEDBACK_EMAIL = "vasil.ev.genij@gmail.com";
+    private static final String FEEDBACK_SUBJECT = "Artist Explorer app";
 
     /**
      * Used to set artist name and cover into the toolbar in case of activity recreation.
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
                 }
                 return true;
             case R.id.feedback:
+                sendFeedback();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -237,6 +241,17 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+
+    public void sendFeedback() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{FEEDBACK_EMAIL});
+        intent.putExtra(Intent.EXTRA_SUBJECT, FEEDBACK_SUBJECT);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
 
