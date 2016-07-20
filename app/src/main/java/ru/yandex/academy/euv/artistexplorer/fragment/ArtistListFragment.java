@@ -36,6 +36,7 @@ import ru.yandex.academy.euv.artistexplorer.util.I18n;
  * Receives data via {@link ArtistListLoader}; displays them using {@link RecyclerView}.
  * Looks the same in both landscape and portrait screen orientation.
  */
+@SuppressWarnings("ConstantConditions")
 public class ArtistListFragment extends Fragment implements LoaderCallback, OnRefreshListener {
     private static final String KEY_ARTIST_LIST = "key_artist_list";
 

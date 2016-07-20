@@ -9,6 +9,8 @@ import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFacto
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.okhttp.OkHttpClient;
 
+import ru.yandex.academy.euv.artistexplorer.util.Notifications;
+
 /**
  * Extends default {@link Application} implementation providing some functionality
  * available throughout the app. Also used to initialize Fresco library.
@@ -25,6 +27,8 @@ public class App extends Application {
         uiThread = Thread.currentThread();
         context = getApplicationContext();
         handler = new Handler(context.getMainLooper());
+
+        Notifications.syncState(context);
 
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
                 .newBuilder(this, new OkHttpClient())

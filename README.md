@@ -1,6 +1,6 @@
 # Artist Explorer
 
-A demo applicaton designed for [Yandex Mobilizatoin 2016](https://academy.yandex.ru/events/mobdev/msk-2016/).
+A demo application designed for [Yandex Mobilizatoin 2016](https://academy.yandex.ru/events/mobdev/msk-2016/).
 
 ## Description
 
