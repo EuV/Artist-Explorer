@@ -7,7 +7,7 @@ import android.os.IBinder;
 
 import ru.yandex.academy.euv.artistexplorer.receiver.HeadsetBroadcastReceiver;
 
-public class ReceiverService extends Service {
+public class HeadsetService extends Service {
 
     HeadsetBroadcastReceiver receiver = new HeadsetBroadcastReceiver();
 

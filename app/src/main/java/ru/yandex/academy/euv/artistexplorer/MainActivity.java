@@ -23,6 +23,8 @@ import ru.yandex.academy.euv.artistexplorer.fragment.AboutFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistDetailsFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment;
 import ru.yandex.academy.euv.artistexplorer.fragment.ArtistListFragment.OnArtistSelectedListener;
+import ru.yandex.academy.euv.artistexplorer.util.Notifications;
+import ru.yandex.academy.euv.artistexplorer.util.Preferences;
 import ru.yandex.academy.euv.artistexplorer.view.SquareDraweeView;
 
 import static android.R.anim.fade_in;
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
     private SquareDraweeView toolbarCoverSmall;
     private SquareDraweeView toolbarCoverBig;
 
+    private boolean notificationsEnabled;
+
 
     /**
      * When creating the first time, displays {@link ArtistListFragment}.
@@ -79,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
         setContentView(R.layout.activity_main);
 
         setUpToolbar(savedInstanceState);
+
+        notificationsEnabled = Preferences.isNotificationsEnabled(this);
 
         if (savedInstanceState != null) {
             return;
@@ -99,16 +105,33 @@ public class MainActivity extends AppCompatActivity implements OnArtistSelectedL
 
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.notifications).setChecked(notificationsEnabled);
+        return true;
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.about:
                 if (visibleFragment != ABOUT) {
                     replaceFragment(AboutFragment.newInstance());
                 }
                 return true;
+
             case R.id.feedback:
                 sendFeedback();
                 return true;
+
+            case R.id.notifications:
+                notificationsEnabled = !item.isChecked();
+                item.setChecked(notificationsEnabled);
+                Preferences.saveNotificationSettings(this, notificationsEnabled);
+                Notifications.syncState(this);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -11,4 +11,10 @@
         android:title="@string/label_feedback"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/notifications"
+        android:checkable="true"
+        android:title="@string/label_notifications"
+        app:showAsAction="never"/>
+
 </menu>

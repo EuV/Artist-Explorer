@@ -2,7 +2,6 @@ package ru.yandex.academy.euv.artistexplorer;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -10,7 +9,7 @@ import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFacto
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.okhttp.OkHttpClient;
 
-import ru.yandex.academy.euv.artistexplorer.service.ReceiverService;
+import ru.yandex.academy.euv.artistexplorer.util.Notifications;
 
 /**
  * Extends default {@link Application} implementation providing some functionality
@@ -29,7 +28,7 @@ public class App extends Application {
         context = getApplicationContext();
         handler = new Handler(context.getMainLooper());
 
-        startReceiverService(context);
+        Notifications.syncState(context);
 
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
                 .newBuilder(this, new OkHttpClient())
@@ -56,10 +55,5 @@ public class App extends Application {
         } else {
             handler.post(action);
         }
-    }
-
-
-    public static void startReceiverService(Context context) {
-        context.startService(new Intent(context, ReceiverService.class));
     }
 }

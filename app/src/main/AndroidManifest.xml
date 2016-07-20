@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.ReceiverService"/>
+        <service android:name=".service.HeadsetService"/>
 
         <receiver android:name=".receiver.BootBroadcastReceiver">
             <intent-filter>
